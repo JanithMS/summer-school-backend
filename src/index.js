@@ -3,9 +3,9 @@ const Products = require("./Models")
 require("./db");
 const cors = require('cors')
 
-app.use(cors({ origin: true, credentials: true}))
-
 const app = express();
+
+app.use(cors({ origin: true, credentials: true}))
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -80,6 +80,20 @@ app.patch('/api/product/:id', async (req, res) => {
     return res.status(500).send(e)
   }
 
+})
+
+app.delete('/api/product/:id', async (req, res) => {
+  try {
+      const task = await Products.findByIdAndDelete(req.params.id)
+
+      if (!task) {
+          res.status(404).send()
+      }
+
+      res.send(task)
+  } catch (e) {
+      res.status(500).send()
+  }
 })
 
 app.listen(3001, () => console.log("listening on port 3001"))
